@@ -13,10 +13,14 @@ target_include_directories(
   PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
          $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/../include>
          $<INSTALL_INTERFACE:include>)
-target_link_libraries(RBDynParsers PUBLIC RBDyn tinyxml2::tinyxml2 yaml-cpp
-                                          Boost::boost)
-set_target_properties(RBDynParsers PROPERTIES COMPILE_FLAGS
-                                              "-DRBDYN_PARSERS_EXPORTS")
+target_link_libraries(RBDynParsers PUBLIC RBDyn tinyxml2::tinyxml2
+                                          ${YAML_CPP_TARGET} Boost::boost)
+if(BUILD_SHARED_LIBS)
+  set_target_properties(RBDynParsers PROPERTIES COMPILE_FLAGS
+                                                "-DRBDYN_PARSERS_EXPORTS")
+else()
+  target_compile_definitions(RBDynParsers PUBLIC "-DRBDYN_PARSERS_STATIC")
+endif()
 set_target_properties(RBDynParsers PROPERTIES CXX_STANDARD 11)
 set_target_properties(RBDynParsers PROPERTIES EXPORT_NAME Parsers)
 set_target_properties(RBDynParsers PROPERTIES SOVERSION ${PROJECT_VERSION_MAJOR}
